@@ -1,5 +1,5 @@
 
-const fetchData = async () => {
+const fetchMovies = async () => {
 	const url = 'https://api.themoviedb.org/3/discover/movie?api_key=d194a96d2ccc62985ba76c92c7529744';
 	const response = await fetch(url);
 	const content = await response.json();
@@ -9,10 +9,11 @@ const fetchData = async () => {
 };
 
 const displayFilmsList = (movie) => {
-	const linkDiv = document.getElementById('root');
+	const elementDiv1 = document.getElementById('searchEndList');
+	elementDiv1.innerHTML = '';
 	const elementUL = document.createElement('ul');
-	elementUL.setAttribute('id', 'filmList');
-	linkDiv.appendChild(elementUL);
+	elementUL.setAttribute('id', 'filmList')
+	elementDiv1.appendChild(elementUL);
 
 	for (let i = 0; i < movie.length; i = i +1) {
 		const movieObject = movie[i];
@@ -25,9 +26,18 @@ const displayFilmsList = (movie) => {
 	};
 };
 
-document.addEventListener("DOMContentLoaded", async () => {
-	const filmsList = await fetchData();
-	displayFilmsList(filmsList);
+const buttonHandler = async () => {
+	const inputValue = document.getElementById('searchInput').value;
+	const url = `https://api.themoviedb.org/3/search/movie?api_key=d194a96d2ccc62985ba76c92c7529744&query=${inputValue}`;
+	const response = await fetch(url);
+	const content = await response.json();
+	displayFilmsList(content.results);
+};
 
+document.addEventListener("DOMContentLoaded", async () => {
+	const filmsList = await fetchMovies();
+	displayFilmsList(filmsList);
+	const button = document.getElementById('buttonId');
+	button.addEventListener('click', buttonHandler );
 
 });
