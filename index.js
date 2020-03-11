@@ -31,10 +31,14 @@ const displayFilmsList = (movie) => {
 
 const buttonHandler = async () => {
 	const inputValue = document.getElementById('searchInput').value;
+	if (inputValue !== '') {
 	const url = `https://api.themoviedb.org/3/search/movie?api_key=d194a96d2ccc62985ba76c92c7529744&query=${inputValue}`;
 	const response = await fetch(url);
 	const content = await response.json();
 	displayFilmsList(content.results);
+	} else {
+		alert('enter your search information!');
+	}
 };
 
 const showFilmInfo = async (movie) => {
