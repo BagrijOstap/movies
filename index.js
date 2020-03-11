@@ -12,7 +12,7 @@ const displayFilmsList = (movie) => {
 	const elementDiv1 = document.getElementById('searchEndList');
 	elementDiv1.innerHTML = '';
 	const elementUL = document.createElement('ul');
-	elementUL.setAttribute('id', 'filmList')
+	elementUL.setAttribute('id', 'filmList');
 	elementDiv1.appendChild(elementUL);
 
 	for (let i = 0; i < movie.length; i = i +1) {
@@ -23,6 +23,9 @@ const displayFilmsList = (movie) => {
 		elementH4.textContent = textContent;
 		elementUL.appendChild(elementLi);
 		elementLi.appendChild(elementH4);
+		elementLi.addEventListener('click', () => {
+			showFilmInfo(movie[i])
+		});
 	};
 };
 
@@ -34,10 +37,40 @@ const buttonHandler = async () => {
 	displayFilmsList(content.results);
 };
 
+const showFilmInfo = async (movie) => {
+	const elementDiv2 = document.getElementById('filmInfo');
+	elementDiv2.innerHTML = '';
+	const url = `https://image.tmdb.org/t/p/w500${movie.poster_path}`;
+	const elementImg = document.createElement('img');
+	elementImg.setAttribute('src', url);
+	elementDiv2.appendChild(elementImg);
+	const elementH1 = document.createElement('h1');
+	elementH1.textContent = movie.original_title;
+	elementDiv2.appendChild(elementH1);
+	const elementP = document.createElement('p');
+	elementP.textContent = movie.overview;
+	elementDiv2.appendChild(elementP);
+	const urlRecomendations = `https://api.themoviedb.org/3/movie/${movie.id}/recommendations?api_key=d194a96d2ccc62985ba76c92c7529744`;
+
+	const response = await fetch(urlRecomendations);
+	const recomendationsContent = await response.json();
+	const arrayElements = recomendationsContent.results.slice(0, 5);
+	const recomendationsContainer = document.createElement('ul');
+	for (let i = 0; i < arrayElements.length; i = i + 1) {
+		const elementLi = document.createElement('li');
+		arrayElement = arrayElements[i].original_title;
+		elementLi.textContent = arrayElement;
+		recomendationsContainer.appendChild(elementLi);
+		elementLi.addEventListener('click', () => {
+			showFilmInfo(arrayElements[i]);
+		});
+	};
+	elementDiv2.appendChild(recomendationsContainer);
+};
+
 document.addEventListener("DOMContentLoaded", async () => {
 	const filmsList = await fetchMovies();
 	displayFilmsList(filmsList);
 	const button = document.getElementById('buttonId');
 	button.addEventListener('click', buttonHandler );
-
 });
