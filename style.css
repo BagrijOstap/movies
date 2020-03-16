@@ -1,0 +1,12 @@
+.hidden {
+    display: none;
+}
+
+li {
+    cursor: pointer;
+}
+
+.classHover:hover {
+    color: blue;
+}
+

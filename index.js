@@ -18,6 +18,7 @@ const displayFilmsList = (movie) => {
 	for (let i = 0; i < movie.length; i = i +1) {
 		const movieObject = movie[i];
 		const elementLi = document.createElement('li');
+		elementLi.setAttribute('class', 'classHover');
 		const elementH4 = document.createElement('h4');
 		const textContent = movieObject.title;
 		elementH4.textContent = textContent;
@@ -27,6 +28,7 @@ const displayFilmsList = (movie) => {
 			showFilmInfo(movie[i])
 		});
 	};
+
 };
 
 const buttonHandler = async () => {
@@ -41,8 +43,18 @@ const buttonHandler = async () => {
 	}
 };
 
-const showFilmInfo = async (movie) => {
+const buttonBackHandler = () => {
+	const elementDiv = document.getElementById('root');
+	elementDiv.removeAttribute('class');
 	const elementDiv2 = document.getElementById('filmInfo');
+	elementDiv2.setAttribute('class', 'hidden');
+};
+
+const showFilmInfo = async (movie) => {
+	const elementDiv = document.getElementById('root');
+	elementDiv.setAttribute('class', 'hidden');
+	const elementDiv2 = document.getElementById('filmInfo');
+	elementDiv2.removeAttribute('class');
 	elementDiv2.innerHTML = '';
 	const url = `https://image.tmdb.org/t/p/w500${movie.poster_path}`;
 	const elementImg = document.createElement('img');
@@ -56,12 +68,18 @@ const showFilmInfo = async (movie) => {
 	elementDiv2.appendChild(elementP);
 	const urlRecomendations = `https://api.themoviedb.org/3/movie/${movie.id}/recommendations?api_key=d194a96d2ccc62985ba76c92c7529744`;
 
+	const buttonBack = document.createElement('button');
+	buttonBack.textContent = 'back';
+	elementDiv2.appendChild(buttonBack);
+	buttonBack.addEventListener('click', buttonBackHandler);
+
 	const response = await fetch(urlRecomendations);
 	const recomendationsContent = await response.json();
 	const arrayElements = recomendationsContent.results.slice(0, 5);
 	const recomendationsContainer = document.createElement('ul');
 	for (let i = 0; i < arrayElements.length; i = i + 1) {
 		const elementLi = document.createElement('li');
+		elementLi.setAttribute('class', 'classHover');
 		arrayElement = arrayElements[i].original_title;
 		elementLi.textContent = arrayElement;
 		recomendationsContainer.appendChild(elementLi);
